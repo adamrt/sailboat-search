@@ -1,0 +1,7 @@
+Django>=1.11,<2.0
+psycopg2
+requests
+bs4
+django-autoslug
+django-extensions
+ipython
