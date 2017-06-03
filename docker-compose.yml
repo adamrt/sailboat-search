@@ -2,12 +2,24 @@ version: '2'
 services:
   db:
     image: postgres
-  web:
-    build: .
+
+  backend:
+    build: ./backend
     command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - ./backend:/code
     ports:
       - "80:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
     depends_on:
       - db
+
+  frontend:
+    build: ./frontend
+    working_dir: /code
+    volumes:
+      - ./frontend:/code
+    depends_on:
+      - db
+      - backend

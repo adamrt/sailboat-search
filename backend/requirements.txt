@@ -4,4 +4,5 @@ requests
 bs4
 django-autoslug
 django-extensions
+django-model-utils
 ipython

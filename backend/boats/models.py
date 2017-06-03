@@ -8,6 +8,17 @@ from .scrapers import BoatScraper
 
 
 class Boat(models.Model):
+    # LOVE = 1
+    # HATE = -1
+
+    # STATUS_CHOICES = (
+    #     (LOVE, 'Love'),
+    #     (HATE, 'Hate'),
+    # )
+
+    # status = models.SmallIntegerField(choices=STATUS_CHOICES)
+    # status_note = models.TextField(blank=True)
+
     name = models.CharField(max_length=50, unique=True)
     slug = AutoSlugField(populate_from='name')
 
@@ -22,15 +33,6 @@ class Boat(models.Model):
 
     class Meta:
         ordering = ['name']
-
-    @property
-    def length_from_name(self):
-        nums = self.name.split(" ")[-1]
-        if len(nums) == 2 and nums.isdigit():
-            nums = int(nums)
-            return nums
-        else:
-            return None
 
     def refresh_listings(self):
         ms = BoatScraper(name=self.name)
@@ -51,17 +53,34 @@ class Boat(models.Model):
                 print('skipping {}.... {} not in {}'.format(self.name, self.name.split(" ")[0], ls.name))
                 continue
 
+
             if ls.length not in [self.length, self.length + 1, self.length - 1]:
                 print('skipping {} ... length {} does not match {}'.format(self.name, self.length, ls.length))
                 continue
 
-            # print(ls.name)
-            listing, created = Listing.objects.get_or_create(url=ls.url, defaults={"boat": self, "name": ls.name})
+            # not exact but close
+            if ls.length in [self.length + 1, self.length - 1]:
+                # make sure length of boat is in listing title
+                # hallberg 35 lengths shows 34, same with 31->32
+                if ls.length_from_name:
+                    mark_review = False
+                    if self.length != ls.length_from_name:
+                        print('skipping {} ... length {} does not match {}'.format(self.name, self.length, ls.length))
+                        continue
+                    else:
+                        print('length equals lengthfromname')
+                else:
+                    print('length not ok, but no length from name')
+
+                    mark_review = True
+            else:
+                print('length ok')
+
+            print(ls.name)
+            listing, created = Listing.objects.get_or_create(url=ls.url, defaults={"boat": self, "title": ls.name})
             listing.price = ls.price
-            listing.name = ls.name
+            listing.title = ls.name
             listing.year = ls.year
             listing.location = ls.location
-            if self.length != ls.length:
-                listing.review = True
-
+            listing.review = mark_review
             listing.save()

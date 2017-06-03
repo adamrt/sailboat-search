@@ -49,6 +49,16 @@ class ListingScraper(object):
             return None
 
     @property
+    def length_from_name(self):
+        if not self.name:
+            return None
+        nums = self.name.split(" ")[-1]
+        if len(nums) == 2 and nums.isdigit():
+            return int(nums)
+        else:
+            return None
+
+    @property
     def year(self):
         year = self.name[0:4]
         if re.findall(r"[0-9]{4}", year):

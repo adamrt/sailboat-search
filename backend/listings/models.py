@@ -1,13 +1,18 @@
 from django.db import models
 from autoslug import AutoSlugField
-
+from model_utils.fields import StatusField
+from model_utils import Choices
 
 
 class Listing(models.Model):
+    STATUS = Choices('', 'no', 'review', 'yes')
+    status = StatusField()
+    status_note = models.TextField(blank=True)
+
     boat = models.ForeignKey("boats.Boat", on_delete=models.CASCADE)
 
-    name = models.CharField(max_length=256)
-    slug = AutoSlugField(populate_from='name')
+    title = models.CharField(max_length=256)
+    slug = AutoSlugField(populate_from='title')
 
     price = models.PositiveIntegerField(blank=True, null=True)
     year = models.PositiveSmallIntegerField(null=True)
@@ -21,4 +26,7 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(db_index=True, auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.title
+
+    class Meta:
+        ordering = ['boat__name']
