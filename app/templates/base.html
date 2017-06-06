@@ -1,0 +1,14 @@
+{% load static %}
+
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    {% include "nav.html" %}
+    {% block header %}{% endblock %}
+    {% block content %}{% endblock %}
+    {% include "footer.html" %}
+  </body>
+</html>

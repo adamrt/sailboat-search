@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from autoslug import AutoSlugField
@@ -23,7 +25,10 @@ class Boat(models.Model):
     slug = AutoSlugField(populate_from='name')
 
     length = models.PositiveSmallIntegerField(blank=True, null=True)
+    favorite = models.BooleanField(default=False)
+
     bw_url = models.URLField(blank=True)
+    sd_url = models.URLField(blank=True)
 
     created_at = models.DateTimeField(db_index=True, auto_now_add=True)
     updated_at = models.DateTimeField(db_index=True, auto_now=True)
@@ -34,9 +39,18 @@ class Boat(models.Model):
     class Meta:
         ordering = ['name']
 
-    def refresh_listings(self):
+    @property
+    def length_from_name(self):
+        match = re.search("\s+\d{2}(\s+|$)", self.name)
+        if match:
+            return match.group().strip()
+        else:
+            return None
+
+    def import_listings(self):
         ms = BoatScraper(name=self.name)
         for ms in ms.get_listings():
+            mark_review = False
             ls = ListingScraper(ms)
             if Listing.objects.filter(url=ls.url).exists():
                 continue
@@ -57,6 +71,7 @@ class Boat(models.Model):
             if ls.length not in [self.length, self.length + 1, self.length - 1]:
                 print('skipping {} ... length {} does not match {}'.format(self.name, self.length, ls.length))
                 continue
+
 
             # not exact but close
             if ls.length in [self.length + 1, self.length - 1]:

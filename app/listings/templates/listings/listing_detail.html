@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <section class="section">
+    <div class="heading">
+      <h1 class="title">{{ object.title }}</h1>
+      <h2 class="subtitle">
+        {{ object.location }}
+      </h2>
+    </div>
+  </section>
+{% endblock %}
+
+{% block content %}
+  Year: {{ object.year }}
+{% endblock %}

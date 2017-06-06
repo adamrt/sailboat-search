@@ -8,4 +8,12 @@ logs:
 
 .PHONY: stop
 stop:
+	docker-compose down
+
+.PHONY: clean
+clean:
 	docker-compose down -v
+
+.PHONY: migrate
+migrate:
+	docker-compose run --rm app python manage.py migrate

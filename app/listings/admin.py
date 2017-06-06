@@ -6,7 +6,7 @@ from .models import Listing
 from .filters import DecadeFilter, LengthFilter
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ['title', 'boat', 'get_length', 'year', 'price', 'get_listing_url', 'location', 'review', 'status']
+    list_display = ['boat', 'get_length', 'year', 'price', 'get_listing_url', 'location', 'review', 'status', 'title']
 
     list_filter = [LengthFilter, DecadeFilter, 'boat']
     search_fields = ['title', 'boat__name']

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <section class="section">
+    <div class="heading">
+      <h1 class="title">Boat Listings</h1>
+      <h2 class="subtitle">
+        A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+      </h2>
+    </div>
+  </section>
+{% endblock %}
+
+{% block content %}
+  <div class="container is-fluid">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Boat</th>
+          <th>Length</th>
+          <th>Year</th>
+          <th>Title</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in object_list %}
+          <tr>
+            <td>{{ object.boat.name }}</td>
+            <td>{{ object.boat.length }}</td>
+            <td>{{ object.year }}</td>
+            <td>{{ object.title }}</td>
+            <td>{{ object.location}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

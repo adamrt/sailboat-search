@@ -24,3 +24,7 @@ class Command(BaseCommand):
         for boat in boats:
             name = boat.select('a')[0].get_text()
             Boat.objects.get_or_create(name=name)
+
+        for boat in Boat.objects.all():
+            boat.length = boat.length_from_name
+            boat.save()
