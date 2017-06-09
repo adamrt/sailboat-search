@@ -30,3 +30,16 @@ class Listing(models.Model):
 
     class Meta:
         ordering = ['boat__name']
+
+    @property
+    def site_title(self):
+        if 'yachtworld.com' in self.url:
+            return 'YW'
+
+        if 'sailboatlistings.com' in self.url:
+            return 'SL'
+
+        if 'craigslist.com' in self.url:
+            return 'CL'
+
+        return '!!'

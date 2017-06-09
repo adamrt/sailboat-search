@@ -32,7 +32,7 @@
                   <th><a href="?{% url_replace request 'year'  %}">Year</a></th>
                   <th><a href="?{% url_replace request 'price'  %}">Price</a></th>
                   <th><a href="?{% url_replace request 'location' %}">Location</a></th>
-                  <th><a href="?{% url_replace request 'location' %}">Listing</a></th>
+                  <th><a href="#">Listing</a></th>
                 </tr>
               </thead>
               <tbody>
@@ -44,7 +44,7 @@
                     <td>{{ object.year }}</td>
                     <td>${{ object.price|intcomma}}</td>
                     <td>{{ object.location|truncatechars:20}}</td>
-                    <td><a href="{{ object.url }}" target="_blank">{{ object.site }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
+                    <td><a href="{{ object.url }}" target="_blank">{{ object.site_title }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
                   </tr>
                 {% endfor %}
               </tbody>
