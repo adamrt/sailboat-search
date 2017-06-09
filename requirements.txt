@@ -5,4 +5,7 @@ bs4
 django-autoslug
 django-extensions
 django-model-utils
+django-filter
+django-widget-tweaks
+django-crispy-forms
 ipython
