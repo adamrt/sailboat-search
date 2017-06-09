@@ -2,10 +2,6 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from autoslug import AutoSlugField
 
-from listings.models import Listing
-from listings.scrapers import ListingScraper
-from .scrapers import BoatScraper
-
 
 class Video(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
