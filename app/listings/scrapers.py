@@ -50,13 +50,9 @@ class ListingScraper(object):
 
     @property
     def length_from_name(self):
-        if not self.name:
-            return None
-        nums = self.name.split(" ")[-1]
-        if len(nums) == 2 and nums.isdigit():
-            return int(nums)
-        else:
-            return None
+        # space, group:length(2digits, maybe H- (H-28), maybe decimal and number, maybe letter D (CD 25D, maybe space or EOL
+        match = re.search("\s+(H-)?(?P<length>\d{2}(\.\d{1})?)[D]?(\s+|$)", self.name)
+        return match.group("length") if match else None
 
     @property
     def year(self):
