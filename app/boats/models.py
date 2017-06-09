@@ -41,11 +41,7 @@ class Boat(models.Model):
     def import_listings(self):
         ms = BoatScraper(name=self.name)
         for ms in ms.get_listings():
-            mark_review = False
             ls = ListingScraper(ms)
-            if Listing.objects.filter(url=ls.url).exists():
-                continue
-
             if ls.status_code != 200:
                 print('skipping {}... bad page: {}'.format(self.name, ls.url))
                 continue
@@ -54,39 +50,21 @@ class Boat(models.Model):
                 print('skipping {}... no name', format(self.name))
                 continue
 
+            if Listing.objects.filter(url=ls.url).exists():
+                continue
+
             if self.name.replace("-", " ").split(" ")[0].lower() not in ls.name.lower():
                 print('skipping {}.... {} not in {}'.format(self.name, self.name.split(" ")[0], ls.name))
                 continue
 
 
-            if ls.length not in [self.length, self.length + 1, self.length - 1]:
-                print('skipping {} ... length {} does not match {}'.format(self.name, self.length, ls.length))
+            if self.length_from_name != ls.length_from_name:
+                print('skipping {} ... boat length: {} does not match listing length: {}'.format(self.name, self.length_from_name, ls.length_from_name))
                 continue
 
-
-            # not exact but close
-            if ls.length in [self.length + 1, self.length - 1]:
-                # make sure length of boat is in listing title
-                # hallberg 35 lengths shows 34, same with 31->32
-                if ls.length_from_name:
-                    mark_review = False
-                    if self.length != ls.length_from_name:
-                        print('skipping {} ... length {} does not match {}'.format(self.name, self.length, ls.length))
-                        continue
-                    else:
-                        print('length equals lengthfromname')
-                else:
-                    print('length not ok, but no length from name')
-
-                    mark_review = True
-            else:
-                print('length ok')
-
-            print(ls.name)
             listing, created = Listing.objects.get_or_create(url=ls.url, defaults={"boat": self, "title": ls.name})
             listing.price = ls.price
             listing.title = ls.name
             listing.year = ls.year
             listing.location = ls.location
-            listing.review = mark_review
             listing.save()
