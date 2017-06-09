@@ -1,25 +1,102 @@
+import re
 import requests
 from bs4 import BeautifulSoup
 
+from listings.models import Listing
 
-class BoatScraper(object):
-    def __init__(self, name):
-        self.name = name
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+
+class YachtWorldSearcher(object):
+    # 2279=sail, 2285=used, ps is per-page results
+    url_tmpl  = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?ps=1000&N=2279+2285&Ntt={}"
+    listing_selector = "div.listing"
+
+    def __init__(self, boat):
+        self.boat = boat
+        self.name = boat.name
 
     @property
-    def url(self):
-        param = '+'.join(self.name.split(' ')).lower()
-        # 2279=sail 2285=used
-        url = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?ps=1000&N=2279+2285&Ntt=" + param
-        return url
+    def search_query(self):
+        return '+'.join(self.name.split(' ')).lower()
 
-    def get_listings(self):
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        req = requests.get(self.url, headers=headers)
+    @property
+    def search_url(self):
+        return self.url_tmpl.format(self.search_query)
+
+    def process(self):
+        req = requests.get(self.search_url, headers=HEADERS)
         soup = BeautifulSoup(req.content, 'html.parser')
-        return soup.select("div.listing")
+        for listing in soup.select("div.listing"):
+            item = YachtWorldItem(self.boat, listing)
+            item.process()
+
+
+class YachtWorldItem(object):
+    def __init__(self, boat, soup):
+        self.boat_short_name = boat.name.replace("-", " ").split(" ")[0].lower()
+        self.soup = soup
+        self.boat = boat
+
+    def process(self):
+        if self.is_pending or self.is_premier or Listing.objects.filter(url=self.url).exists():
+            return
+
+        if self.boat_short_name not in self.name.lower():
+            return
+
+        if self.boat.length_from_name != self.length_from_name:
+            print('{} != {} :: {} || {}'.format(self.boat.length_from_name, self.length_from_name, self.boat.name, self.name))
+            return
+
+        listing, created = Listing.objects.get_or_create(url=self.url, defaults={"boat": self.boat, "title": self.name})
+        listing.price = self.price
+        listing.title = self.name
+        listing.year = self.year
+        listing.location = self.location
+        listing.save()
+
+    @property
+    def is_pending(self):
+        return bool(self.soup.find('span', {'class': 'active_field'}) )
+
+    @property
+    def is_premier(self):
+        return 'premier' in self.soup.get('class')
+
+    @property
+    def name(self):
+        return " ".join(self.soup.find('div', {'class': 'make-model'}).find('a').text.split())
+
+    @property
+    def price(self):
+        return self.soup.select('.price')[0].string.replace("US$", "").replace(",", "").strip()
+
+    @property
+    def location(self):
+        return " ".join(self.soup.select('.location')[0].string.split())
 
     @property
     def length(self):
-        tail = self.name.split(" ")[-1]
-        return int(tail) if len(tail) == 2 and tail.isdigit() else None
+        return re.search("(?P<length>\d{2}) (ft).?", self.name).group('length')
+
+    @property
+    def length_from_name(self):
+        # space, group:length(2digits, maybe H- (H-28), maybe decimal and number, maybe letter D (CD 25D, maybe space or EOL
+        match = re.search("\s+(H-)?(?P<length>\d{2}(\.\d{1})?)[D]?(\s+|$)", self.name)
+        return match.group("length") if match else self.length
+
+    @property
+    def year(self):
+        s = self.name.split(' ft ')[1]
+        year = s[0:4]
+        if re.findall(r"[0-9]{4}", year):
+            return int(year)
+        else:
+            return None
+
+    @property
+    def url(self):
+        base_url = "http://www.yachtworld.com"
+        href = self.soup.select("div.make-model a")[0]['href']
+        return base_url + href

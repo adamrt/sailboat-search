@@ -6,7 +6,7 @@ from autoslug import AutoSlugField
 
 from listings.models import Listing
 from listings.scrapers import ListingScraper
-from .scrapers import BoatScraper
+from .scrapers import YachtWorldSearcher
 
 
 class Boat(models.Model):
@@ -39,32 +39,5 @@ class Boat(models.Model):
         return match.group("length") if match else None
 
     def import_listings(self):
-        ms = BoatScraper(name=self.name)
-        for ms in ms.get_listings():
-            ls = ListingScraper(ms)
-            if ls.status_code != 200:
-                print('skipping {}... bad page: {}'.format(self.name, ls.url))
-                continue
-
-            if ls.name is None:
-                print('skipping {}... no name', format(self.name))
-                continue
-
-            if Listing.objects.filter(url=ls.url).exists():
-                continue
-
-            if self.name.replace("-", " ").split(" ")[0].lower() not in ls.name.lower():
-                print('skipping {}.... {} not in {}'.format(self.name, self.name.split(" ")[0], ls.name))
-                continue
-
-
-            if self.length_from_name != ls.length_from_name:
-                print('skipping {} ... boat length: {} does not match listing length: {}'.format(self.name, self.length_from_name, ls.length_from_name))
-                continue
-
-            listing, created = Listing.objects.get_or_create(url=ls.url, defaults={"boat": self, "title": ls.name})
-            listing.price = ls.price
-            listing.title = ls.name
-            listing.year = ls.year
-            listing.location = ls.location
-            listing.save()
+        searcher = YachtWorldSearcher(self)
+        searcher.process()
