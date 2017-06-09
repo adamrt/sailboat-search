@@ -7,5 +7,4 @@ django-extensions
 django-model-utils
 django-filter
 django-widget-tweaks
-django-crispy-forms
 ipython
