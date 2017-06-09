@@ -29,6 +29,10 @@ class Boat(models.Model):
         ordering = ['name']
 
     @property
+    def display_length(self):
+        return str(round(self.length, 1) if self.length % 1 else int(self.length))
+
+    @property
     def length_from_name(self):
         # space, group:length(2digits, maybe H- (H-28), maybe decimal and number, maybe letter D (CD 25D, maybe space or EOL
         match = re.search("\s+(H-)?(?P<length>\d{2}(\.\d{1})?)[D]?(\s+|$)", self.name)
