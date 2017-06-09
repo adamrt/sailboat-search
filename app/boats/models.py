@@ -10,17 +10,6 @@ from .scrapers import BoatScraper
 
 
 class Boat(models.Model):
-    # LOVE = 1
-    # HATE = -1
-
-    # STATUS_CHOICES = (
-    #     (LOVE, 'Love'),
-    #     (HATE, 'Hate'),
-    # )
-
-    # status = models.SmallIntegerField(choices=STATUS_CHOICES)
-    # status_note = models.TextField(blank=True)
-
     name = models.CharField(max_length=50, unique=True)
     slug = AutoSlugField(populate_from='name')
 
