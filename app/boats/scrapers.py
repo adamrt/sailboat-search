@@ -10,7 +10,6 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleW
 class YachtWorldSearcher(object):
     # 2279=sail, 2285=used, ps is per-page results
     url_tmpl  = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?ps=1000&N=2279+2285&Ntt={}"
-    listing_selector = "div.listing"
 
     def __init__(self, boat):
         self.boat = boat
@@ -39,7 +38,7 @@ class YachtWorldItem(object):
         self.boat = boat
 
     def process(self):
-        if self.is_pending or self.is_premier or Listing.objects.filter(url=self.url).exists():
+        if self.is_pending or self.is_premier:
             return
 
         if self.boat_short_name not in self.name.lower():
@@ -70,11 +69,17 @@ class YachtWorldItem(object):
 
     @property
     def price(self):
-        return self.soup.select('.price')[0].string.replace("US$", "").replace(",", "").strip()
+        s = self.soup.select('.price')[0].string.replace("US$", "").replace(",", "").strip()
+        return s if not s.startswith('Call') else None
 
     @property
     def location(self):
-        return " ".join(self.soup.select('.location')[0].string.split())
+        s = " ".join(self.soup.select('.location')[0].string.split())
+        s = s.replace('United States', 'USA')
+        s = s.replace('United Kingdom', 'USA')
+        s = s.replace('Mexico', 'MEX')
+        s = s.replace('Canada', 'CAN')
+        return s
 
     @property
     def length(self):
