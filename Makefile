@@ -17,3 +17,8 @@ clean:
 .PHONY: migrate
 migrate:
 	docker-compose run --rm app python manage.py migrate
+
+.PHONY: import
+import:
+	docker-compose run --rm app python manage.py import_boats
+	docker-compose run --rm app python manage.py import_listings

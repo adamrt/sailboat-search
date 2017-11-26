@@ -7,7 +7,15 @@ from listings.models import Listing
 
 class Command(BaseCommand):
     help = 'Import all boats from bluewater'
+    # def add_arguments(self, parser):
+    #     parser.add_argument('boat_name', nargs='+', type=str, default=None)
+
 
     def handle(self, *args, **options):
-        for boat in Boat.objects.all():
+        # if options.get('boat_name'):
+        #     boats = Boat.objects.filter(name=options.get('boat_name')[0])
+        # else:
+        boats = Boat.objects.all()
+
+        for boat in boats:
             boat.import_listings()

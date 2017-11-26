@@ -17,6 +17,7 @@ class Listing(models.Model):
     price = models.PositiveIntegerField(blank=True, null=True)
     year = models.PositiveSmallIntegerField(null=True)
     location = models.CharField(max_length=255)
+    country = models.CharField(max_length=2, blank=True)
 
     url = models.URLField(unique=True)
 

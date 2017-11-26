@@ -15,6 +15,7 @@ class Boat(models.Model):
     length = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
     favorite = models.BooleanField(default=False)
 
+    bluewater = models.BooleanField(default=False)
     bw_url = models.URLField(blank=True)
     sd_url = models.URLField(blank=True)
 

@@ -7,6 +7,29 @@ from listings.models import Listing
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 
+class SailboatListingsSearcher(object):
+    # 2279=sail, 2285=used, ps is per-page results
+    url_tmpl  = "http://www.sailboatlistings.com/cgi-bin/saildata/db.cgi?db=default&uid=default&&view_records=+Search+by+Keyword+&keyword={}"
+
+    def __init__(self, boat):
+        self.boat = boat
+        self.name = boat.name
+
+    @property
+    def search_query(self):
+        return '+'.join(self.name.split(' ')).lower()
+
+    @property
+    def search_url(self):
+        return self.url_tmpl.format(self.search_query)
+
+    def process(self):
+        req = requests.get(self.search_url, headers=HEADERS)
+        soup = BeautifulSoup(req.content, 'html.parser')
+        for listing in soup.select("div.listing"):
+            item = YachtWorldItem(self.boat, listing)
+            item.process()
+
 class YachtWorldSearcher(object):
     # 2279=sail, 2285=used, ps is per-page results
     url_tmpl  = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?ps=1000&N=2279+2285&Ntt={}"
@@ -52,7 +75,8 @@ class YachtWorldItem(object):
         listing.price = self.price
         listing.title = self.name
         listing.year = self.year
-        listing.location = self.location
+        listing.location = self.short_location
+        listing.country = self.country
         listing.save()
 
     @property
@@ -73,13 +97,37 @@ class YachtWorldItem(object):
         return s if not s.startswith('Call') else None
 
     @property
-    def location(self):
-        s = " ".join(self.soup.select('.location')[0].string.split())
+    def country(self):
+        loc = self.location.lower()
+        if ', us' in loc:
+            return 'US'
+        if 'united states' in loc:
+            return 'US'
+
+        if 'united kingdom' in loc:
+            return 'UK'
+
+        if ', mex' in loc:
+            return 'MX'
+
+        if 'mexico' in loc:
+            return 'MX'
+
+        if 'france' in loc:
+            return 'FR'
+
+    @property
+    def short_location(self):
+        s = self.location
         s = s.replace('United States', 'USA')
-        s = s.replace('United Kingdom', 'USA')
+        s = s.replace('United Kingdom', 'GBR')
         s = s.replace('Mexico', 'MEX')
         s = s.replace('Canada', 'CAN')
         return s
+
+    @property
+    def location(self):
+        return " ".join(self.soup.select('.location')[0].string.split())
 
     @property
     def length(self):

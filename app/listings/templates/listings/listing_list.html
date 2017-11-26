@@ -9,8 +9,8 @@
      $('#id_name').on('change', function(){
        this.form.submit();
      });
-     $('select').select2({
-       theme: "bootstrap"
+     $('#id_bluewater').on('change', function(){
+       this.form.submit();
      });
    });
   </script>
@@ -18,10 +18,36 @@
 
 {% block content %}
 
-
-
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
+      <div class="col-2">
+        <form id="filter-form" action="" method="get">
+          <div class="form-group">
+            {% render_field filter.form.name class="form-control" %}
+          </div>
+          <hr/>
+          <div class="checkbox">
+            <label style="margin-bottom:0">
+              {% render_field filter.form.bluewater class="checkbox" %} Bluewater Only
+            </label>
+          </div>
+          <hr/>
+          <div class="form-group">
+            <label>Decade</label>
+            {% render_field filter.form.decade class="list-inline" %}
+          </div>
+          <hr/>
+          <div class="form-group">
+            <label>Max Price</label>
+            {% render_field filter.form.price class="list-inline" %}
+          </div>
+          <hr/>
+          <div class="form-group">
+            <label>Length</label>
+            {% render_field filter.form.length class="list-unstyled" %}
+          </div>
+        </form>
+      </div>
       <div class="col-10">
         <div class="card">
           <div class="card-header">Boat Listings</div>
@@ -30,6 +56,7 @@
               <thead>
                 <tr>
                   <th><a href="?{% url_replace request 'favorite' %}"><i class="fa fa-heart" aria-hidden="true"></i></a></th>
+                  <th><a href="?{% url_replace request 'title' %}">Title</a></th>
                   <th><a href="?{% url_replace request 'boat__name' %}">Boat</a></th>
                   <th><a href="?{% url_replace request 'boat__length'  %}">Length</a></th>
                   <th><a href="?{% url_replace request 'year'  %}">Year</a></th>
@@ -42,11 +69,12 @@
                 {% for object in filter.qs %}
                   <tr>
                     <td><input type="checkbox"></input></td>
+                    <td>{{ object.title }}</td>
                     <td>{{ object.boat.name }}</td>
                     <td>{{ object.boat.length|floatformat }}</td>
                     <td>{{ object.year }}</td>
                     <td>${{ object.price|intcomma}}</td>
-                    <td>{{ object.location|truncatechars:25}}</td>
+                    <td>{{ object.location}}</td>
                     <td><a href="{{ object.url }}" target="_blank">{{ object.site_title }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
                   </tr>
                 {% endfor %}
@@ -55,25 +83,7 @@
           </div>
         </div>
       </div>
-      <div class="col-2">
-        <form id="filter-form" action="" method="get">
-          <div class="form-group">
-            {% render_field filter.form.name class="form-control" %}
-          </div>
-          <hr/>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Decade</label>
-            {% render_field filter.form.decade class="list-inline" %}
-          </div>
-          <hr/>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Length</label>
-            {% render_field filter.form.length class="list-unstyled" %}
-          </div>
-          <hr/>
-          <a href="/listings/" class="btn btn-primary btn-block">Reset Filters</a>
-        </form>
-      </div>
     </div>
   </div>
+
 {% endblock %}
