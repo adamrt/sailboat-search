@@ -76,7 +76,7 @@ class YachtWorldItem(object):
         listing.title = self.name
         listing.year = self.year
         listing.location = self.short_location
-        listing.country = self.country
+        listing.country = self.country or ""
         listing.save()
 
     @property
