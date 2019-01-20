@@ -1,10 +1,8 @@
 import re
 
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist
 from autoslug import AutoSlugField
 
-from listings.models import Listing
 from .scrapers import YachtWorldSearcher
 
 

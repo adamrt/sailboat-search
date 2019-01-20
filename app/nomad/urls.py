@@ -1,28 +1,17 @@
-"""nomad URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.11/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
-"""
-from django.conf.urls import url, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import path
 
 from listings.views import ListingList, ListingDetail
 from boats.views import BoatDetail
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^listings/(?P<pk>\d+)/', ListingDetail.as_view(), name="listing_detail"),
-    url(r'^listings/', ListingList.as_view(), name="listing_list"),
+admin.site.site_header = "Boats"
+admin.site.site_title = "Boats"
 
-    url(r'^boats/(?P<pk>\d+)/', BoatDetail.as_view(), name="boat-detail"),
-]
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('listings/<int:pk>/', ListingDetail.as_view(), name="listing_detail"),
+    path('listings/', ListingList.as_view(), name="listing_list"),
+    path('boats/<int:pk>/', BoatDetail.as_view(), name="boat-detail"),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
