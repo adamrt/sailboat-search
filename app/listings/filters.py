@@ -1,10 +1,10 @@
-from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
 import django_filters
 from .models import Listing
 from boats.models import Boat
+
 
 class ListingFilter(django_filters.FilterSet):
     DECADE_CHOICES = (
@@ -35,8 +35,8 @@ class ListingFilter(django_filters.FilterSet):
         ('25', _('25 and less'))
     )
 
-    name = django_filters.ModelChoiceFilter(name='boat_id', label="Model", queryset=Boat.objects.all(), empty_label="All Boats")
-    bluewater = django_filters.BooleanFilter(name='boat__bluewater', label="Bluewater", widget=forms.CheckboxInput(), method='filter_bluewater')
+    name = django_filters.ModelChoiceFilter(field_name='boat_id', label="Model", queryset=Boat.objects.all(), empty_label="All Boats")
+    bluewater = django_filters.BooleanFilter(field_name='boat__bluewater', label="Bluewater", widget=forms.CheckboxInput(), method='filter_bluewater')
     decade = django_filters.ChoiceFilter(choices=DECADE_CHOICES, method='filter_decade', widget=django_filters.widgets.LinkWidget())
     price = django_filters.ChoiceFilter(choices=PRICE_CHOICES, method='filter_price', widget=django_filters.widgets.LinkWidget())
     length = django_filters.ChoiceFilter(choices=LENGTH_CHOICES, method='filter_length', widget=django_filters.widgets.LinkWidget())

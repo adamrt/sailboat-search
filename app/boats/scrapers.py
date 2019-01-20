@@ -30,6 +30,7 @@ class SailboatListingsSearcher(object):
             item = YachtWorldItem(self.boat, listing)
             item.process()
 
+
 class YachtWorldSearcher(object):
     # 2279=sail, 2285=used, ps is per-page results
     url_tmpl  = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?ps=1000&N=2279+2285&Ntt={}"
@@ -93,7 +94,7 @@ class YachtWorldItem(object):
 
     @property
     def price(self):
-        s = self.soup.select('.price')[0].string.replace("US$", "").replace(",", "").strip()
+        s = self.soup.select('.price')[0].text.strip().replace("US$", "").replace("*", "").replace(",", "").strip()
         return s if not s.startswith('Call') else None
 
     @property
