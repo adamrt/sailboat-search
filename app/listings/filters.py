@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django import forms
+from django.db.models import Q
 
 import django_filters
 from .models import Listing
@@ -14,6 +15,7 @@ class ListingFilter(django_filters.FilterSet):
         ('60s', _('60s')),
         ('old', _('50s and older')),
     )
+
     PRICE_CHOICES = (
         ('150', _('150K')),
         ('100', _('100K')),
@@ -37,9 +39,25 @@ class ListingFilter(django_filters.FilterSet):
 
     name = django_filters.ModelChoiceFilter(field_name='boat_id', label="Model", queryset=Boat.objects.all(), empty_label="All Boats")
     bluewater = django_filters.BooleanFilter(field_name='boat__bluewater', label="Bluewater", widget=forms.CheckboxInput(), method='filter_bluewater')
-    decade = django_filters.ChoiceFilter(choices=DECADE_CHOICES, method='filter_decade', widget=django_filters.widgets.LinkWidget())
-    price = django_filters.ChoiceFilter(choices=PRICE_CHOICES, method='filter_price', widget=django_filters.widgets.LinkWidget())
-    length = django_filters.ChoiceFilter(choices=LENGTH_CHOICES, method='filter_length', widget=django_filters.widgets.LinkWidget())
+    location = django_filters.BooleanFilter(label="US Only", method='filter_location', widget=forms.CheckboxInput())
+
+    length = django_filters.MultipleChoiceFilter(
+        choices=LENGTH_CHOICES,
+        method='filter_length',
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    decade = django_filters.MultipleChoiceFilter(
+        choices=DECADE_CHOICES,
+        method='filter_decade',
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    price = django_filters.MultipleChoiceFilter(
+        choices=PRICE_CHOICES,
+        method='filter_price',
+        widget=forms.CheckboxSelectMultiple
+    )
 
     class Meta:
         model = Listing
@@ -50,50 +68,66 @@ class ListingFilter(django_filters.FilterSet):
             return queryset.filter(boat__bluewater=True)
         return queryset
 
+    def filter_location(self, queryset, name, value):
+        if value:
+            return queryset.filter(location__icontains="USA")
+        return queryset
+
     def filter_price(self, queryset, name, value):
-        if value == '150':
-            return queryset.filter(price__lte=150000)
-        if value == '100':
-            return queryset.filter(price__lte=100000)
-        if value == '75':
-            return queryset.filter(price__lte=75000)
-        if value == '50':
-            return queryset.filter(price__lte=50000)
-        if value == '20':
-            return queryset.filter(price__lte=20000)
+        query = Q()
+        for v in value:
+            if v == '150':
+                query = query | Q(price__lte=150000)
+            if v == '100':
+                query = query | Q(price__lte=100000)
+            if v == '75':
+                query = query | Q(price__lte=75000)
+            if v == '50':
+                query = query | Q(price__lte=50000)
+            if v == '20':
+                query = query | Q(price__lte=20000)
+        return queryset.filter(query)
 
     def filter_decade(self, queryset, name, value):
-        if value == 'old':
-            return queryset.filter(year__lte=1959)
-        if value == '60s':
-            return queryset.filter(year__gte=1960, year__lte=1969)
-        if value == '70s':
-            return queryset.filter(year__gte=1970, year__lte=1979)
-        if value == '80s':
-            return queryset.filter(year__gte=1980, year__lte=1989)
-        if value == 'new':
-            return queryset.filter(year__gte=1990)
+        query = Q()
+
+        for v in value:
+            if v == 'old':
+                query = query | Q(year__lte=1959)
+            if v == '60s':
+                query = query | Q(year__gte=1960, year__lte=1969)
+            if v == '70s':
+                query = query | Q(year__gte=1970, year__lte=1979)
+            if v == '80s':
+                query = query | Q(year__gte=1980, year__lte=1989)
+            if v == 'new':
+                query = query | Q(year__gte=1990)
+        return queryset.filter(query)
 
     def filter_length(self, queryset, name, value):
-        if value == 'large':
-            return queryset.filter(boat__length__gte=44)
-        if value == '42':
-            return queryset.filter(boat__length__gte=42, boat__length__lte=43.9)
-        if value == '40':
-            return queryset.filter(boat__length__gte=40, boat__length__lte=41.9)
-        if value == '38':
-            return queryset.filter(boat__length__gte=38, boat__length__lte=39.9)
-        if value == '36':
-            return queryset.filter(boat__length__gte=36, boat__length__lte=37.9)
-        if value == '34':
-            return queryset.filter(boat__length__gte=34, boat__length__lte=35.9)
-        if value == '32':
-            return queryset.filter(boat__length__gte=32, boat__length__lte=33.9)
-        if value == '30':
-            return queryset.filter(boat__length__gte=30, boat__length__lte=31.9)
-        if value == '28':
-            return queryset.filter(boat__length__gte=28, boat__length__lte=29.9)
-        if value == '26':
-            return queryset.filter(boat__length__gte=26, boat__length__lte=27.9)
-        if value == '25':
-            return queryset.filter(boat__length__lte=25.9)
+        query = Q()
+        for v in value:
+            if v == 'large':
+                query = query | Q(boat__length__gte=44)
+            if v == '42':
+                query = query | Q(boat__length__gte=42, boat__length__lte=43.9)
+            if v == '40':
+                query = query | Q(boat__length__gte=40, boat__length__lte=41.9)
+            if v == '38':
+                query = query | Q(boat__length__gte=38, boat__length__lte=39.9)
+            if v == '36':
+                query = query | Q(boat__length__gte=36, boat__length__lte=37.9)
+            if v == '34':
+                query = query | Q(boat__length__gte=34, boat__length__lte=35.9)
+            if v == '32':
+                query = query | Q(boat__length__gte=32, boat__length__lte=33.9)
+            if v == '30':
+                query = query | Q(boat__length__gte=30, boat__length__lte=31.9)
+            if v == '28':
+                query = query | Q(boat__length__gte=28, boat__length__lte=29.9)
+            if v == '26':
+                query = query | Q(boat__length__gte=26, boat__length__lte=27.9)
+            if v == '25':
+                query = query | Q(boat__length__lte=25.9)
+
+        return queryset.filter(query)

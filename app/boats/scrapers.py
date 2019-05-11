@@ -151,6 +151,4 @@ class YachtWorldItem(object):
 
     @property
     def url(self):
-        base_url = "http://www.yachtworld.com"
-        href = self.soup.select("div.make-model a")[0]['href']
-        return base_url + href
+        return self.soup.select("div.make-model a")[0]['href']

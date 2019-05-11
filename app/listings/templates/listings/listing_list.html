@@ -9,7 +9,7 @@
      $('#id_name').on('change', function(){
        this.form.submit();
      });
-     $('#id_bluewater').on('change', function(){
+     $('input[type=checkbox]').on('change', function(){
        this.form.submit();
      });
    });
@@ -29,6 +29,12 @@
           <div class="checkbox">
             <label style="margin-bottom:0">
               {% render_field filter.form.bluewater class="checkbox" %} Bluewater Only
+            </label>
+          </div>
+          <hr/>
+          <div class="form-group">
+            <label style="margin-bottom:0">
+              {% render_field filter.form.location class="checkbox" %} US Only
             </label>
           </div>
           <hr/>
