@@ -4,15 +4,16 @@ from django import template
 
 register = template.Library()
 
+
 @register.simple_tag
 def url_replace(request, value):
     params = request.GET.copy()
-    field = 'sort'
+    field = "sort"
     if field in params.keys():
-        param = params['sort']
-        if param.startswith('-') and param.lstrip('-') == value:
+        param = params["sort"]
+        if param.startswith("-") and param.lstrip("-") == value:
             params[field] = value
-        elif param.lstrip('-') == value:
+        elif param.lstrip("-") == value:
             params[field] = "-" + value
         else:
             params[field] = value

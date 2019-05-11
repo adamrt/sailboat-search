@@ -7,13 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('boats', '0003_boat_location'),
-    ]
+    dependencies = [("boats", "0003_boat_location")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='boat',
-            name='location',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="boat", name="location")]

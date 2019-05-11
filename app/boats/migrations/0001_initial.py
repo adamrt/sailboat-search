@@ -10,20 +10,30 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Boat',
+            name="Boat",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('slug', autoslug.fields.AutoSlugField(editable=False, populate_from='name')),
-                ('length', models.PositiveSmallIntegerField(blank=True, null=True)),
-                ('bw_url', models.URLField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                (
+                    "slug",
+                    autoslug.fields.AutoSlugField(editable=False, populate_from="name"),
+                ),
+                ("length", models.PositiveSmallIntegerField(blank=True, null=True)),
+                ("bw_url", models.URLField(blank=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, db_index=True)),
             ],
-        ),
+        )
     ]

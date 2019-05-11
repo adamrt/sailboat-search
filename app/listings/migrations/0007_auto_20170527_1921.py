@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0006_listing_location'),
-    ]
+    dependencies = [("listings", "0006_listing_location")]
 
     operations = [
         migrations.AlterField(
-            model_name='listing',
-            name='year',
+            model_name="listing",
+            name="year",
             field=models.PositiveSmallIntegerField(null=True),
-        ),
+        )
     ]

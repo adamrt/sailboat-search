@@ -7,14 +7,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('boats', '0005_auto_20170604_0423'),
-    ]
+    dependencies = [("boats", "0005_auto_20170604_0423")]
 
     operations = [
         migrations.AlterField(
-            model_name='boat',
-            name='length',
-            field=models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True),
-        ),
+            model_name="boat",
+            name="length",
+            field=models.DecimalField(
+                blank=True, decimal_places=1, max_digits=3, null=True
+            ),
+        )
     ]

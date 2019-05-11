@@ -8,23 +8,16 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0008_auto_20170601_1806'),
-    ]
+    dependencies = [("listings", "0008_auto_20170601_1806")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='listing',
-            options={'ordering': ['boat__name']},
+            name="listing", options={"ordering": ["boat__name"]}
         ),
-        migrations.RenameField(
-            model_name='listing',
-            old_name='name',
-            new_name='title',
-        ),
+        migrations.RenameField(model_name="listing", old_name="name", new_name="title"),
         migrations.AlterField(
-            model_name='listing',
-            name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from='title'),
+            model_name="listing",
+            name="slug",
+            field=autoslug.fields.AutoSlugField(editable=False, populate_from="title"),
         ),
     ]

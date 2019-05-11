@@ -7,14 +7,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0004_listing_review'),
-    ]
+    dependencies = [("listings", "0004_listing_review")]
 
     operations = [
         migrations.AlterField(
-            model_name='listing',
-            name='name',
-            field=models.CharField(max_length=256),
-        ),
+            model_name="listing", name="name", field=models.CharField(max_length=256)
+        )
     ]

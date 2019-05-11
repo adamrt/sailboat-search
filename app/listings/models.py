@@ -5,14 +5,14 @@ from model_utils import Choices
 
 
 class Listing(models.Model):
-    STATUS = Choices('', 'no', 'review', 'yes')
+    STATUS = Choices("", "no", "review", "yes")
     status = StatusField()
     status_note = models.TextField(blank=True)
 
     boat = models.ForeignKey("boats.Boat", on_delete=models.CASCADE)
 
     title = models.CharField(max_length=256)
-    slug = AutoSlugField(populate_from='title')
+    slug = AutoSlugField(populate_from="title")
 
     price = models.PositiveIntegerField(blank=True, null=True)
     year = models.PositiveSmallIntegerField(null=True)
@@ -30,17 +30,17 @@ class Listing(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['boat__name']
+        ordering = ["boat__name"]
 
     @property
     def site_title(self):
-        if 'yachtworld.com' in self.url:
-            return 'YW'
+        if "yachtworld.com" in self.url:
+            return "YW"
 
-        if 'sailboatlistings.com' in self.url:
-            return 'SL'
+        if "sailboatlistings.com" in self.url:
+            return "SL"
 
-        if 'craigslist.com' in self.url:
-            return 'CL'
+        if "craigslist.com" in self.url:
+            return "CL"
 
-        return '!!'
+        return "!!"

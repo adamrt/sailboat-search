@@ -7,13 +7,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('boats', '0001_initial'),
-    ]
+    dependencies = [("boats", "0001_initial")]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='boat',
-            options={'ordering': ['name']},
-        ),
+        migrations.AlterModelOptions(name="boat", options={"ordering": ["name"]})
     ]

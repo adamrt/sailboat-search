@@ -10,8 +10,8 @@ admin.site.site_header = "Boats"
 admin.site.site_title = "Boats"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # path('listings/<int:pk>/', ListingDetail.as_view(), name="listing_detail"),
-    path('', ListingList.as_view(), name="listing_list"),
+    path("", ListingList.as_view(), name="listing_list"),
     # path('boats/<int:pk>/', BoatDetail.as_view(), name="boat-detail"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

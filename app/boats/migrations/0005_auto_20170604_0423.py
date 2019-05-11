@@ -7,19 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('boats', '0004_remove_boat_location'),
-    ]
+    dependencies = [("boats", "0004_remove_boat_location")]
 
     operations = [
         migrations.AddField(
-            model_name='boat',
-            name='favorite',
-            field=models.BooleanField(default=False),
+            model_name="boat", name="favorite", field=models.BooleanField(default=False)
         ),
         migrations.AddField(
-            model_name='boat',
-            name='sd_url',
-            field=models.URLField(blank=True),
+            model_name="boat", name="sd_url", field=models.URLField(blank=True)
         ),
     ]

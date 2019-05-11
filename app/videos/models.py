@@ -7,7 +7,7 @@ class Video(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=50, unique=True)
-    slug = AutoSlugField(populate_from='name')
+    slug = AutoSlugField(populate_from="name")
 
     length = models.PositiveSmallIntegerField(blank=True, null=True)
     favorite = models.BooleanField(default=False)
@@ -22,4 +22,4 @@ class Video(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]

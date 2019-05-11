@@ -8,7 +8,7 @@ from .scrapers import YachtWorldSearcher
 
 class Boat(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    slug = AutoSlugField(populate_from='name')
+    slug = AutoSlugField(populate_from="name")
 
     length = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
     favorite = models.BooleanField(default=False)
@@ -24,7 +24,7 @@ class Boat(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     @property
     def display_length(self):

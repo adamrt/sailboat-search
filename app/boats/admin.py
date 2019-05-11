@@ -4,5 +4,7 @@ from .models import Boat
 
 
 class BoatAdmin(admin.ModelAdmin):
-    list_display = ['name', 'display_length', 'slug']
+    list_display = ["name", "display_length", "slug"]
+
+
 admin.site.register(Boat, BoatAdmin)

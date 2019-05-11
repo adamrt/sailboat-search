@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0003_auto_20170527_0618'),
-    ]
+    dependencies = [("listings", "0003_auto_20170527_0618")]
 
     operations = [
         migrations.AddField(
-            model_name='listing',
-            name='review',
+            model_name="listing",
+            name="review",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

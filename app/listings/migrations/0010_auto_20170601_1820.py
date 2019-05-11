@@ -8,14 +8,17 @@ import model_utils.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0009_auto_20170601_1816'),
-    ]
+    dependencies = [("listings", "0009_auto_20170601_1816")]
 
     operations = [
         migrations.AlterField(
-            model_name='listing',
-            name='status',
-            field=model_utils.fields.StatusField(choices=[(0, 'dummy')], default='review', max_length=100, no_check_for_status=True),
-        ),
+            model_name="listing",
+            name="status",
+            field=model_utils.fields.StatusField(
+                choices=[(0, "dummy")],
+                default="review",
+                max_length=100,
+                no_check_for_status=True,
+            ),
+        )
     ]

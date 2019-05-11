@@ -11,23 +11,37 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('boats', '0001_initial'),
-    ]
+    dependencies = [("boats", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Listing',
+            name="Listing",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('slug', autoslug.fields.AutoSlugField(editable=False, populate_from='name')),
-                ('price', models.PositiveSmallIntegerField(blank=True, null=True)),
-                ('year', models.PositiveSmallIntegerField()),
-                ('url', models.URLField(unique=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, db_index=True)),
-                ('boat', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='boats.Boat')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                (
+                    "slug",
+                    autoslug.fields.AutoSlugField(editable=False, populate_from="name"),
+                ),
+                ("price", models.PositiveSmallIntegerField(blank=True, null=True)),
+                ("year", models.PositiveSmallIntegerField()),
+                ("url", models.URLField(unique=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "boat",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="boats.Boat"
+                    ),
+                ),
             ],
-        ),
+        )
     ]

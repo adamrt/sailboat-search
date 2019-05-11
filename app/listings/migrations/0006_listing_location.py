@@ -7,15 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0005_auto_20170527_0714'),
-    ]
+    dependencies = [("listings", "0005_auto_20170527_0714")]
 
     operations = [
         migrations.AddField(
-            model_name='listing',
-            name='location',
-            field=models.CharField(default='', max_length=255),
+            model_name="listing",
+            name="location",
+            field=models.CharField(default="", max_length=255),
             preserve_default=False,
-        ),
+        )
     ]

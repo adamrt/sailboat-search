@@ -8,19 +8,20 @@ import model_utils.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('listings', '0007_auto_20170527_1921'),
-    ]
+    dependencies = [("listings", "0007_auto_20170527_1921")]
 
     operations = [
         migrations.AddField(
-            model_name='listing',
-            name='status',
-            field=model_utils.fields.StatusField(choices=[(0, 'dummy')], default='not-interested', max_length=100, no_check_for_status=True),
+            model_name="listing",
+            name="status",
+            field=model_utils.fields.StatusField(
+                choices=[(0, "dummy")],
+                default="not-interested",
+                max_length=100,
+                no_check_for_status=True,
+            ),
         ),
         migrations.AddField(
-            model_name='listing',
-            name='status_note',
-            field=models.TextField(blank=True),
+            model_name="listing", name="status_note", field=models.TextField(blank=True)
         ),
     ]
